@@ -1,36 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _TestSW_1
 {
     internal class TrapezoidIntegral
     {
-        const int NUMPOINT = 300;
 
-        private double Integral(double[] f, double step)
+        public class Answer 
         {
-            double value = 0;
-            for(int i = 0; i < NUMPOINT; i++)
+            public List<double> x = new List<double>();
+            public List<double> y = new List<double>();
+            public double result;
+        };
+
+        private Answer answer = new Answer();
+
+        public double f(double x) => x / (Math.Pow(x, 2) - 3 * x + 2);
+
+        private double TrapIntegral(double a, double b, int n, double eps)
+        {
+            double res1, res2;
+            do
             {
-                value += f[i];
-            }
-            value *= step;
-            return value;
+                double h = (b - a) / n;
+                double x = a;
+                double res = 0;
+                while (x + h <= b)
+                {
+                    res += h * (f(x) + f(x + h)) / 2;
+                    x += h;
+                    answer.x.Add(x);
+                    answer.y.Add(res);
+                }
+                res2 = res;
+                n += 1;
+                res1 = res;
+            } while (Math.Abs(res2 - res1) > eps);
+            return res1;
         }
 
-        void Calculate()
+        public Answer Calculate(double a, double b, int n, double eps)
         {
-            double[] f = new double[NUMPOINT];
-            double step, t;
-            step = Math.PI / NUMPOINT;
-            t = 0.0;
-            for(int i = 0; i < NUMPOINT; i++)
-            {
-                // f[i] = 
-            }
+            double Res = TrapIntegral(a, b, n, eps);
+            answer.result = Res;
+            return answer;
         }
     }
 }
