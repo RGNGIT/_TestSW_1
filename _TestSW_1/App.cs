@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
-using static _TestSW_1.TrapezoidIntegral;
+using static _TestSW_1.RectangleIntegral;
 
 namespace _TestSW_1
 {
     public partial class App : Form
     {
-
-        double ODZ = 0.8;
 
         public App()
         {
@@ -28,7 +26,7 @@ namespace _TestSW_1
             try
             {
                 SetCanvas();
-                TrapezoidIntegral trapezoidIntegral = new TrapezoidIntegral();
+                RectangleIntegral trapezoidIntegral = new RectangleIntegral();
                 Answer answer = trapezoidIntegral.Calculate
                     (
                     Convert.ToDouble(textBoxA.Text),
@@ -37,12 +35,15 @@ namespace _TestSW_1
                     Convert.ToDouble(textBoxEps.Text)
                     );
                 chart1.Series["CalcFunc"].Points.DataBindXY(answer.x, answer.y);
-            } 
-            catch(Exception e)
+                labelStatus.Text = answer.result.ToString();
+            }
+            catch (Exception e)
             {
                 labelStatus.Text = e.Message;
             }
         }
+
+        bool ODZ(double i) => (i <= -0.6 || i >= 0.6) && i != 2;
 
         bool RunValidation()
         {
@@ -54,7 +55,7 @@ namespace _TestSW_1
             {
                 for (double i = lower; i <= upper; i += 0.1) 
                 {
-                    if(i > (ODZ * -1) && i < ODZ)
+                    if(!ODZ(i))
                     {
                         MessageBox.Show("Диапaзон значений не входит в ОДЗ");
                         return false;
